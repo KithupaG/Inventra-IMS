@@ -22,7 +22,7 @@ public class editProduct extends javax.swing.JDialog {
      */
     public editProduct(java.awt.Frame parent, boolean modal, int productId) {
         super(parent, modal);
-        initComponents(); // GUI builder code
+        initComponents();
         this.productId = productId;
         loadCategories();       // Step 5
         loadProductData();      // Step 4

@@ -4,7 +4,9 @@
  */
 package lk.inventra.gui;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.JOptionPane;
+import lk.inventra.connection.MySQL;
 
 /**
  *
@@ -93,7 +95,6 @@ public class addProduct extends javax.swing.JDialog {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -185,31 +186,39 @@ public class addProduct extends javax.swing.JDialog {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this, "Product Added!");
+        try {
+        String name = jTextField1.getText();
+        int quantity = (int) jSpinner1.getValue();
+        String price = jTextField3.getText();
+        java.util.Date date = jDateChooser1.getDate();
+        String addedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(date);
+        int status = jRadioButton1.isSelected() ? 1 : 2;
+        int categoryId = Integer.parseInt((String) jComboBox1.getSelectedItem());
+
+        if (name.isEmpty() || price.isEmpty() || date == null) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String query = "INSERT INTO product (name, quantity_on_hand, price, added_date, status_id, category_id) " +
+                       "VALUES ('" + name + "', " + quantity + ", " + price + ", '" + addedDate + "', " + status + ", " + categoryId + ")";
+
+        MySQL.executeIUD(query); 
+
+        JOptionPane.showMessageDialog(this, "Product added successfully!");
+        this.dispose();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
+        FlatLightLaf.setup();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

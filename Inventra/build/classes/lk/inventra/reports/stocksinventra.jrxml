@@ -1,0 +1,78 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="stocksinventra" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cce09872-b522-4d53-8f0e-440080df372e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Inventra"/>
+	<query language="SQL"><![CDATA[SELECT * FROM product]]></query>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<field name="quantity_on_hand" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="quantity_on_hand"/>
+		<property name="com.jaspersoft.studio.field.label" value="quantity_on_hand"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<field name="price" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="price"/>
+		<property name="com.jaspersoft.studio.field.label" value="price"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<field name="added_date" class="java.time.LocalDateTime">
+		<property name="com.jaspersoft.studio.field.name" value="added_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="added_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<field name="status_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="status_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="status_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="db0e9e2c-868c-4660-b3b4-1aee6bab18d3" x="182" y="30" width="190" height="30" fontSize="14.0" bold="true" underline="true" hTextAlign="Center">
+			<text><![CDATA[Stock Report | Inventra]]></text>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch"/>
+	<columnHeader height="115" splitType="Stretch"/>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<element kind="textField" uuid="2277675b-b6f5-45ba-9630-c72b9a233f0e" x="0" y="0" width="80" height="30" fontSize="16.0" bold="true">
+				<expression><![CDATA[$F{name}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b935f17d-ffd2-4a1f-ad27-76c272b2d374"/>
+			</element>
+			<element kind="textField" uuid="445bd3fc-92ae-4c4f-a3d9-b6d8a26376c9" x="180" y="0" width="100" height="30" forecolor="#1B7B9E">
+				<expression><![CDATA[$F{quantity_on_hand}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c25e2b95-ac74-4827-837c-98e54af0ba10"/>
+			</element>
+			<element kind="textField" uuid="37aba723-ea6d-49a3-8bd9-beb2cd6052f9" x="280" y="0" width="60" height="30" forecolor="#1B7B9E">
+				<expression><![CDATA[$F{price}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3c86f3f0-0868-4736-bbed-399e24e9819b"/>
+			</element>
+			<element kind="textField" uuid="6ea0c5e4-8697-4ee7-b3a9-2b548e2f8179" x="340" y="0" width="120" height="30" forecolor="#0574A1">
+				<expression><![CDATA[$F{added_date}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fa976aa7-79ad-4491-8a47-1094db287ff0"/>
+			</element>
+			<element kind="textField" uuid="cde74012-727c-40f7-886e-293f81340fe1" x="130" y="0" width="50" height="30" forecolor="#1B7B9E">
+				<expression><![CDATA[$F{id}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ece07156-d003-4fd7-8042-acde9395b4b6"/>
+			</element>
+			<element kind="textField" uuid="001d42e7-fd13-4700-9cf9-9b96e7ff612b" x="460" y="0" width="70" height="30" forecolor="#1B7B9E">
+				<expression><![CDATA[$F{status_id}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a36e8b91-35d7-49d5-ab86-6bb360343a62"/>
+			</element>
+			<element kind="staticText" uuid="737dfc6e-78b0-42a7-8434-f781000f432f" x="70" y="0" width="30" height="30" fontSize="16.0" bold="true" hTextAlign="Left" vTextAlign="Top">
+				<text><![CDATA[:]]></text>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

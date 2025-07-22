@@ -5,11 +5,20 @@
 package lk.inventra.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.io.InputStream;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.sql.Connection;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import lk.inventra.connection.MySQL;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -117,6 +126,54 @@ public class Dashboard extends javax.swing.JFrame {
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void exportStockReport() {
+        try {
+        InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/stocksinventra.jasper");
+
+        if (fileStream == null) {
+            JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
+            return;
+        }
+
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        Connection conn = lk.inventra.connection.MySQL.getConnection();
+
+        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
+        JasperViewer.viewReport(print, false);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
+    }
+    }
+    
+    public void exportSalesReport() {
+        try {
+        InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/salesinventra.jasper");
+
+        if (fileStream == null) {
+            JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
+            return;
+        }
+
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        Connection conn = lk.inventra.connection.MySQL.getConnection();
+
+        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
+        JasperViewer.viewReport(print, false);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
+    }
     }
 
     @SuppressWarnings("unchecked")
@@ -340,11 +397,21 @@ public class Dashboard extends javax.swing.JFrame {
         jButton5.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("EXPORT SALES REPORT");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setBackground(new java.awt.Color(255, 153, 51));
         jButton6.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("EXPORT STOCK INFORMATION REPORT");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 153, 255));
@@ -531,6 +598,11 @@ public class Dashboard extends javax.swing.JFrame {
         jButton7.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
         jButton7.setText("EXPORT SALES REPORT");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -705,7 +777,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+        exportStockReport();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -726,6 +798,18 @@ public class Dashboard extends javax.swing.JFrame {
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        exportStockReport();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        exportSalesReport();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        exportSalesReport();
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments

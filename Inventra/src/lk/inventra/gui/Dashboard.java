@@ -5,14 +5,20 @@
 package lk.inventra.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.sql.Connection;
 import java.util.Vector;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import lk.inventra.connection.MySQL;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -38,6 +44,30 @@ public class Dashboard extends javax.swing.JFrame {
         userData();
         loadTotProducts();
         loadTotSales();
+        productData();
+
+        productTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = productTable.getSelectedRow();
+            if (selectedRow != -1) {
+                int id = Integer.parseInt(productTable.getValueAt(selectedRow, 0).toString());
+                System.out.println("Selected ID: " + id);
+            }
+        });
+
+        class ButtonRenderer extends JPanel implements TableCellRenderer {
+
+            public ButtonRenderer() {
+                setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+                add(new JButton("Edit"));
+                add(new JButton("Delete"));
+            }
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                return this;
+            }
+        }
     }
 
     public void dashboardData() {
@@ -104,6 +134,28 @@ public class Dashboard extends javax.swing.JFrame {
         }
     }
 
+    public void productData() {
+        try {
+            ResultSet r4 = MySQL.executeSearch("SELECT * FROM `product`");
+
+            DefaultTableModel productModel = new DefaultTableModel(new String[]{"ID", "Name", "Quantity", "Price", "Date Added", "Status ID"}, 0);
+            productTable.setModel(productModel);
+
+            while (r4.next()) {
+                Vector<String> v4 = new Vector<>();
+                v4.add(r4.getString("id"));
+                v4.add(r4.getString("name"));
+                v4.add(r4.getString("quantity_on_hand"));
+                v4.add(r4.getString("price"));
+                v4.add(r4.getString("added_date"));
+                v4.add(r4.getString("status_id"));
+                productModel.addRow(v4);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadTotProducts() {
         try {
             ResultSet totProducts = MySQL.executeSearch("SELECT COUNT(*) AS total FROM product");
@@ -127,59 +179,61 @@ public class Dashboard extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     public void exportStockReport() {
         try {
-        InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/stocksinventra.jasper");
+            InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/stocksinventra.jasper");
 
-        if (fileStream == null) {
-            JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
-            return;
+            if (fileStream == null) {
+                JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
+                return;
+            }
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
+
+            Map<String, Object> parameters = new HashMap<>();
+
+            Connection conn = lk.inventra.connection.MySQL.getConnection();
+
+            JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
+            JasperViewer.viewReport(print, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
         }
-
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
-
-        Map<String, Object> parameters = new HashMap<>();
-
-        Connection conn = lk.inventra.connection.MySQL.getConnection();
-
-        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
-        JasperViewer.viewReport(print, false);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
     }
-    }
-    
+
     public void exportSalesReport() {
         try {
-        InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/salesinventra.jasper");
+            InputStream fileStream = getClass().getResourceAsStream("/lk/inventra/reports/salesinventra.jasper");
 
-        if (fileStream == null) {
-            JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
-            return;
+            if (fileStream == null) {
+                JOptionPane.showMessageDialog(this, "Report file not found! Please check path and file name.");
+                return;
+            }
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
+
+            Map<String, Object> parameters = new HashMap<>();
+
+            Connection conn = lk.inventra.connection.MySQL.getConnection();
+
+            JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
+            JasperViewer.viewReport(print, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
         }
-
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(fileStream);
-
-        Map<String, Object> parameters = new HashMap<>();
-
-        Connection conn = lk.inventra.connection.MySQL.getConnection();
-
-        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
-        JasperViewer.viewReport(print, false);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
-    }
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -214,6 +268,8 @@ public class Dashboard extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jButton12 = new javax.swing.JButton();
+        scrollPane = new javax.swing.JScrollPane();
+        productTable = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -226,6 +282,14 @@ public class Dashboard extends javax.swing.JFrame {
         jButton13 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
+
+        jMenuItem1.setText("jMenuItem1");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DASHBOARD | INVENTRA");
@@ -476,6 +540,11 @@ public class Dashboard extends javax.swing.JFrame {
         jButton11.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 255, 255));
         jButton11.setText("Delete Product");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setFont(new java.awt.Font("Segoe UI Variable", 1, 18)); // NOI18N
@@ -516,30 +585,48 @@ public class Dashboard extends javax.swing.JFrame {
         jButton12.setFont(new java.awt.Font("Segoe UI Variable", 1, 14)); // NOI18N
         jButton12.setForeground(new java.awt.Color(255, 255, 255));
         jButton12.setText("SEARCH PRODUCT");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        productTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        scrollPane.setViewportView(productTable);
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addComponent(jTextField1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton11))
-                            .addComponent(jLabel9))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jTextField1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel9)
+                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 818, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 13, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,7 +637,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 544, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -564,7 +653,7 @@ public class Dashboard extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 831, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(67, 67, 67))
         );
         jPanel5Layout.setVerticalGroup(
@@ -811,6 +900,62 @@ public class Dashboard extends javax.swing.JFrame {
         exportSalesReport();
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+        model.setRowCount(0); // Clear old results
+
+        try {
+            String keyword = jTextField1.getText().trim();
+            String query = "SELECT * FROM products WHERE name LIKE '%" + keyword + "%'";
+            ResultSet rs = MySQL.executeSearch(query);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double price = rs.getDouble("price");
+
+                model.addRow(new Object[]{id, name, price, "Edit/Delete"});
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        int selectedRow = productTable.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                int id = Integer.parseInt(productTable.getValueAt(selectedRow, 0).toString());
+
+                // Show confirmation
+                int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete ID " + id + "?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Delete from DB
+                    lk.inventra.connection.MySQL.executeIUD("DELETE FROM product WHERE id = " + id);
+
+                    // Remove row from table (optional but makes it feel instant)
+                    DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+                    model.removeRow(selectedRow);
+
+                    JOptionPane.showMessageDialog(this, "Product deleted successfully!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid ID format.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Something went wrong!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a row first.");
+        }
+    }//GEN-LAST:event_jButton11ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -841,6 +986,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -853,6 +999,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -866,5 +1013,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTable jTable4;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable productTable;
+    private javax.swing.JScrollPane scrollPane;
     // End of variables declaration//GEN-END:variables
 }

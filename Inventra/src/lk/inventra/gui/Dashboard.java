@@ -862,7 +862,32 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
+        try {
+            String name = jTextField2.getText().trim();
+            String query = "SELECT * FROM customer WHERE name LIKE '%" + name + "%'";
+
+            ResultSet rs = MySQL.executeSearch(query);
+
+            DefaultTableModel model = new DefaultTableModel(
+                    new String[]{"Customer ID", "Customer Name", "Customer Email", "Date Added", "Status ID"}, 0
+            );
+
+            jTable4.setModel(model);
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                Vector<String> row = new Vector<>();
+                row.add(String.valueOf(rs.getInt("id")));
+                row.add(rs.getString("name"));
+                row.add(rs.getString("email"));
+                row.add(rs.getString("date_added"));
+                row.add(rs.getString("status_id"));
+                model.addRow(row);
+            }
+
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -906,23 +931,31 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
-        model.setRowCount(0); // Clear old results
-
         try {
-            String keyword = jTextField1.getText().trim();
-            String query = "SELECT * FROM products WHERE name LIKE '%" + keyword + "%'";
+            String name = jTextField1.getText().trim();
+            String query = "SELECT * FROM product WHERE name LIKE '%" + name + "%'";
+
             ResultSet rs = MySQL.executeSearch(query);
 
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                double price = rs.getDouble("price");
+            DefaultTableModel model = new DefaultTableModel(
+                    new String[]{"ID", "Name", "Quantity", "Price", "Date Added", "Status ID"}, 0
+            );
 
-                model.addRow(new Object[]{id, name, price, "Edit/Delete"});
+            productTable.setModel(model);
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                Vector<String> row = new Vector<>();
+                row.add(String.valueOf(rs.getInt("id")));
+                row.add(rs.getString("name"));
+                row.add(rs.getString("quantity_on_hand"));
+                row.add(rs.getString("price"));
+                row.add(rs.getString("added_date"));
+                row.add(rs.getString("status_id"));
+                model.addRow(row);
             }
 
-        } catch (Exception e) {
+        } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
 

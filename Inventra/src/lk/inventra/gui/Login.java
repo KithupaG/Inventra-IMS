@@ -5,7 +5,9 @@
 package lk.inventra.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import lk.inventra.connection.MySQL;
 
 public class Login extends javax.swing.JFrame {
     
@@ -108,12 +110,32 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this, "Login successful. Welcome!");
+        String usernameField = jTextField1.getText();
+        String passwordField = jPasswordField1.getText();
         
-        Dashboard dashboardwindow = new Dashboard();
-        dashboardwindow.setVisible(true);
+        if(usernameField.isEmpty() && passwordField.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields."); 
+        }
         
-        this.dispose();
+        try {
+            String query = "SELECT * FROM user WHERE username = '"+ usernameField +"' AND password = '"+ passwordField +"'";
+            ResultSet rs = MySQL.executeSearch(query);
+            
+            if(rs.next()) {
+                String correctUsername = rs.getString("username");
+                JOptionPane.showMessageDialog(this, "Login successful. Welcome " + correctUsername + "!");
+                
+                this.dispose();
+
+                Dashboard dashboard = new Dashboard();
+                dashboard.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid email or password.");
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

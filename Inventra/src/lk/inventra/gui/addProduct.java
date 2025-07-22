@@ -5,6 +5,7 @@
 package lk.inventra.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import lk.inventra.connection.MySQL;
 
@@ -13,7 +14,7 @@ import lk.inventra.connection.MySQL;
  * @author kithu
  */
 public class addProduct extends javax.swing.JDialog {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(addProduct.class.getName());
 
     /**
@@ -23,6 +24,8 @@ public class addProduct extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(parent);
+
+        loadCategories();
     }
 
     /**
@@ -187,31 +190,31 @@ public class addProduct extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-        String name = jTextField1.getText();
-        int quantity = (int) jSpinner1.getValue();
-        String price = jTextField3.getText();
-        java.util.Date date = jDateChooser1.getDate();
-        String addedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(date);
-        int status = jRadioButton1.isSelected() ? 1 : 2;
-        int categoryId = Integer.parseInt((String) jComboBox1.getSelectedItem());
+            String name = jTextField1.getText();
+            int quantity = (int) jSpinner1.getValue();
+            String price = jTextField3.getText();
+            java.util.Date date = jDateChooser1.getDate();
+            String addedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(date);
+            int status = jRadioButton1.isSelected() ? 1 : 2;
+            int categoryId = Integer.parseInt((String) jComboBox1.getSelectedItem());
 
-        if (name.isEmpty() || price.isEmpty() || date == null) {
-            JOptionPane.showMessageDialog(this, "Please fill all fields.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
+            if (name.isEmpty() || price.isEmpty() || date == null) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String query = "INSERT INTO product (name, quantity_on_hand, price, added_date, status_id, category_id) "
+                    + "VALUES ('" + name + "', " + quantity + ", " + price + ", '" + addedDate + "', " + status + ", " + categoryId + ")";
+
+            MySQL.executeIUD(query);
+
+            JOptionPane.showMessageDialog(this, "Product added successfully!");
+            this.dispose();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        String query = "INSERT INTO product (name, quantity_on_hand, price, added_date, status_id, category_id) " +
-                       "VALUES ('" + name + "', " + quantity + ", " + price + ", '" + addedDate + "', " + status + ", " + categoryId + ")";
-
-        MySQL.executeIUD(query); 
-
-        JOptionPane.showMessageDialog(this, "Product added successfully!");
-        this.dispose();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -232,6 +235,17 @@ public class addProduct extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
+    }
+
+    private void loadCategories() {
+        try {
+            ResultSet rs = MySQL.executeSearch("SELECT * FROM category");
+            while (rs.next()) {
+                jComboBox1.addItem(String.valueOf(rs.getInt("id")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

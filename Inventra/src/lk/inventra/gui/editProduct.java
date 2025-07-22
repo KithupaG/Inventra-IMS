@@ -5,22 +5,27 @@
 package lk.inventra.gui;
 
 import javax.swing.JOptionPane;
+import lk.inventra.connection.MySQL;
+import java.sql.ResultSet;
 
 /**
  *
  * @author kithu
  */
 public class editProduct extends javax.swing.JDialog {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(editProduct.class.getName());
 
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(editProduct.class.getName());
+    private int productId;
+    
     /**
      * Creates new form addItem
      */
-    public editProduct(java.awt.Frame parent, boolean modal) {
+    public editProduct(java.awt.Frame parent, boolean modal, int productId) {
         super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(parent);
+        initComponents(); // GUI builder code
+        this.productId = productId;
+        loadCategories();       // Step 5
+        loadProductData();      // Step 4
     }
 
     /**
@@ -88,7 +93,6 @@ public class editProduct extends javax.swing.JDialog {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -165,6 +169,7 @@ public class editProduct extends javax.swing.JDialog {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -180,45 +185,90 @@ public class editProduct extends javax.swing.JDialog {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this, "Product Edited!");
+        String name = jTextField1.getText();
+        int quantity = (int) jSpinner1.getValue();
+        String price = jTextField3.getText();
+        int status = jRadioButton1.isSelected() ? 1 : 2;
+        int categoryId = Integer.parseInt((String) jComboBox1.getSelectedItem());
+
+        String query = "UPDATE product SET name = '" + name + "', quantity_on_hand = " + quantity
+                + ", price = " + price + ", status_id = " + status
+                + ", category_id = " + categoryId + " WHERE id = " + productId;
+
+        MySQL.executeIUD(query);
+        JOptionPane.showMessageDialog(this, "Product updated successfully!");
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+//            logger.log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the dialog */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                editProduct dialog = new editProduct(new javax.swing.JFrame(), true, productId);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                editProduct dialog = new editProduct(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+    private void loadProductData() {
+        try {
+            ResultSet rs = MySQL.executeSearch("SELECT * FROM product WHERE id = " + productId);
+            if (rs.next()) {
+                jTextField1.setText(rs.getString("name"));
+                jSpinner1.setValue(rs.getInt("quantity_on_hand"));
+                jTextField3.setText(rs.getString("price"));
+                int status = rs.getInt("status_id");
+                if (status == 1) {
+                    jRadioButton1.setSelected(true);
+                } else {
+                    jRadioButton2.setSelected(true);
+                }
+                int categoryId = rs.getInt("category_id");
+                jComboBox1.setSelectedItem(categoryId); // see Step 5
             }
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    private void loadCategories() {
+        try {
+            ResultSet rs = MySQL.executeSearch("SELECT * FROM category");
+            while (rs.next()) {
+                jComboBox1.addItem(String.valueOf(rs.getInt("id")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

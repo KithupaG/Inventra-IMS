@@ -870,8 +870,13 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        editProduct productedit = new editProduct(this, true);
-        productedit.setVisible(true);
+        int selectedRow = productTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int productId = Integer.parseInt(productTable.getValueAt(selectedRow, 0).toString());
+            editProduct productedit = new editProduct(new javax.swing.JFrame(), true, productId);
+            productedit.setVisible(true);
+        }
+
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed

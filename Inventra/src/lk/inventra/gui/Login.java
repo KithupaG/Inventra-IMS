@@ -129,12 +129,15 @@ public class Login extends javax.swing.JFrame {
 
                 Dashboard dashboard = new Dashboard();
                 dashboard.setVisible(true);
+                logger.info("User successfully logged in");
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid email or password.");
+                logger.warning("User failed to login");
             }
         }catch(Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, e.getMessage());
+            logger.severe("unknown error occured when logging in");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

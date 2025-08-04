@@ -210,10 +210,11 @@ public class addProduct extends javax.swing.JDialog {
 
             JOptionPane.showMessageDialog(this, "Product added successfully!");
             this.dispose();
-
+            logger.info("User added product " + name + "successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
+            logger.warning("unknown error occurred");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -243,8 +244,10 @@ public class addProduct extends javax.swing.JDialog {
             while (rs.next()) {
                 jComboBox1.addItem(String.valueOf(rs.getInt("id")));
             }
+            logger.info("categories loaded");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.warning("category loading failed due to unknown error");
         }
     }
 

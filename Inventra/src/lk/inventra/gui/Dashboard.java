@@ -107,9 +107,12 @@ public class Dashboard extends javax.swing.JFrame {
                 v2.add(rs1.getString("added_date"));
                 dtm2.addRow(v2);
             }
+            
+            logger.info("Dashboard Data Loaded");
 
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.severe("Dashboard Data Couldn't Be Loaded");
         }
     }
 
@@ -129,8 +132,11 @@ public class Dashboard extends javax.swing.JFrame {
                 v3.add(r3.getString("status_id"));
                 userModel.addRow(v3);
             }
+            
+            logger.info("User Data Loaded");
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.severe("User Data Couldn't Be Loaded");
         }
     }
 
@@ -151,8 +157,10 @@ public class Dashboard extends javax.swing.JFrame {
                 v4.add(r4.getString("status_id"));
                 productModel.addRow(v4);
             }
+            logger.info("Product Data Loaded");
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.severe("Product Data Couldn't Be Loaded");
         }
     }
 
@@ -163,8 +171,10 @@ public class Dashboard extends javax.swing.JFrame {
                 int totalProducts = totProducts.getInt("total");
                 jLabel4.setText(String.format("%,d", totalProducts));
             }
+            logger.info("Total Product Data Couldn't Be Loaded");
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.severe("Total Product Data Couldn't Be Loaded");
         }
     }
 
@@ -175,8 +185,10 @@ public class Dashboard extends javax.swing.JFrame {
                 int totalSales = totSales.getInt("total");
                 jLabel7.setText(String.format("%,d", totalSales));
             }
+            logger.info("Total Product Data Loaded");
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.severe("Total Sales Data Couldn't Be Loaded");
         }
     }
 
@@ -197,10 +209,13 @@ public class Dashboard extends javax.swing.JFrame {
 
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
             JasperViewer.viewReport(print, false);
+            
+            logger.info("Stock inventory report successful");
 
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
+            logger.warning("Stock inventory report wasn't successful");
         }
     }
 
@@ -221,10 +236,13 @@ public class Dashboard extends javax.swing.JFrame {
 
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
             JasperViewer.viewReport(print, false);
+            
+            logger.info("Sale report successfully exported");
 
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage());
+            logger.info("Sales report successfully exported");
         }
     }
 
@@ -851,6 +869,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         if (exitdialog == JOptionPane.OK_OPTION) {
             System.exit(0);
+            logger.info("User cancelled exit");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -877,7 +896,8 @@ public class Dashboard extends javax.swing.JFrame {
                 row.add(rs.getString("status_id"));
                 model.addRow(row);
             }
-
+            
+            logger.info("User searched for: " + name);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -900,11 +920,13 @@ public class Dashboard extends javax.swing.JFrame {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         addProduct productadd = new addProduct(this, true);
         productadd.setVisible(true);
+        logger.info("User adding new product");
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         addProduct productadd = new addProduct(this, true);
         productadd.setVisible(true);
+        logger.info("User adding new product");
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -947,9 +969,10 @@ public class Dashboard extends javax.swing.JFrame {
                 row.add(rs.getString("status_id"));
                 model.addRow(row);
             }
-
+            logger.info("User searched for: " + name);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
+            logger.warning("Searched query failed");
         }
 
     }//GEN-LAST:event_jButton12ActionPerformed
@@ -982,8 +1005,11 @@ public class Dashboard extends javax.swing.JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Something went wrong!", "Error", JOptionPane.ERROR_MESSAGE);
             }
+            
+            logger.info("User successfully deleted a product");
         } else {
             JOptionPane.showMessageDialog(this, "Please select a row first.");
+            logger.info("User tried to delete a product");
         }
     }//GEN-LAST:event_jButton11ActionPerformed
 
@@ -992,7 +1018,7 @@ public class Dashboard extends javax.swing.JFrame {
                 "Are you sure you want to log out?",
                 "Confirm Logout",
                 JOptionPane.YES_NO_OPTION);
-
+        logger.info("User logged out");
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
 

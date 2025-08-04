@@ -13,15 +13,19 @@ import lk.inventra.connection.MySQL;
 public class productController {
 
     public static boolean addProduct(String name, int quantity, double price, String addedDate, int status, int categoryId) {
+
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
         try {
-            String query = "INSERT INTO product (name, quantity_on_hand, price, added_date, status_id, category_id) " +
-                           "VALUES ('" + name + "', " + quantity + ", " + price + ", '" + addedDate + "', " + status + ", " + categoryId + ")";
-            
+            String query = "INSERT INTO product (name, quantity_on_hand, price, added_date, status_id, category_id) "
+                    + "VALUES ('" + name + "', " + quantity + ", " + price + ", '" + addedDate + "', " + status + ", " + categoryId + ")";
+
             MySQL.executeIUD(query);
-            return true; 
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false; 
+            return false;
         }
     }
 }

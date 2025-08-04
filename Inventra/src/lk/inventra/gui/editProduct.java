@@ -198,6 +198,7 @@ public class editProduct extends javax.swing.JDialog {
         MySQL.executeIUD(query);
         JOptionPane.showMessageDialog(this, "Product updated successfully!");
         this.dispose();
+        logger.info("product updated successfully");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -251,10 +252,12 @@ public class editProduct extends javax.swing.JDialog {
                     jRadioButton2.setSelected(true);
                 }
                 int categoryId = rs.getInt("category_id");
-                jComboBox1.setSelectedItem(categoryId); // see Step 5
+                jComboBox1.setSelectedItem(categoryId);
+                logger.info("product data succesfully loaded");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.severe("product data coudln't be loaded");
         }
     }
 
@@ -264,8 +267,10 @@ public class editProduct extends javax.swing.JDialog {
             while (rs.next()) {
                 jComboBox1.addItem(String.valueOf(rs.getInt("id")));
             }
+            logger.info("category loaded successfully");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.info("category couldn't be successfully");
         }
     }
 

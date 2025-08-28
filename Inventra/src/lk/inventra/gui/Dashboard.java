@@ -2,6 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+
+
+
 package lk.inventra.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -25,7 +28,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
-
 /**
  *
  * @author kithu
@@ -33,7 +35,7 @@ import net.sf.jasperreports.view.JasperViewer;
 public class Dashboard extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Dashboard.class.getName());
-
+    
     /**
      * Creates new form Dashboard
      */
@@ -107,13 +109,14 @@ public class Dashboard extends javax.swing.JFrame {
                 v2.add(rs1.getString("added_date"));
                 dtm2.addRow(v2);
             }
-            
+
             logger.info("Dashboard Data Loaded");
 
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
             logger.severe("Dashboard Data Couldn't Be Loaded");
         }
+
     }
 
     public void userData() {
@@ -132,7 +135,7 @@ public class Dashboard extends javax.swing.JFrame {
                 v3.add(r3.getString("status_id"));
                 userModel.addRow(v3);
             }
-            
+
             logger.info("User Data Loaded");
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -209,7 +212,7 @@ public class Dashboard extends javax.swing.JFrame {
 
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
             JasperViewer.viewReport(print, false);
-            
+
             logger.info("Stock inventory report successful");
 
         } catch (Exception e) {
@@ -236,7 +239,7 @@ public class Dashboard extends javax.swing.JFrame {
 
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
             JasperViewer.viewReport(print, false);
-            
+
             logger.info("Sale report successfully exported");
 
         } catch (Exception e) {
@@ -896,7 +899,7 @@ public class Dashboard extends javax.swing.JFrame {
                 row.add(rs.getString("status_id"));
                 model.addRow(row);
             }
-            
+
             logger.info("User searched for: " + name);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -1005,7 +1008,7 @@ public class Dashboard extends javax.swing.JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Something went wrong!", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             logger.info("User successfully deleted a product");
         } else {
             JOptionPane.showMessageDialog(this, "Please select a row first.");
@@ -1021,7 +1024,6 @@ public class Dashboard extends javax.swing.JFrame {
         logger.info("User logged out");
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
-
 
             Login login = new Login();
             login.setVisible(true);

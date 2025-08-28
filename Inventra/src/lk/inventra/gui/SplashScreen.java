@@ -19,12 +19,12 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen() {
         initComponents();
-        animaton();
+        animation();
     }
 
     static int i = 0;
 
-    public void animaton() {
+    public void animation() {
         Thread percentage = new Thread(new Runnable() {
             @Override
             public void run() {

@@ -27,9 +27,11 @@ Here're some of the project's best features:
 
 <p>1. Download repository as a zip or clone repo</p>
 
-<p>2. Head into the Invetra folder &gt; dist &gt; lib</p>
+<p>2. Run the "inventra_db.sql" file under the database folder through MySQL</p>
 
-<p>3. Run Inventra.exe file</p>
+<p>3. Head into the Invetra folder &gt; dist &gt; lib</p>
+
+<p>4. Run Inventra.exe file</p>
 
   
   
@@ -45,7 +47,3 @@ Technologies used in the project:
 *   FlatLaf
 *   RS2XML
 *   Netbeans IDE
-
-<h2>🛡️ License:</h2>
-
-This project is licensed under the

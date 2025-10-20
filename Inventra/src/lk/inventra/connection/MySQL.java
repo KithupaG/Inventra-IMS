@@ -8,9 +8,9 @@ import java.sql.SQLException;
 
 public class MySQL {
 
-    private static final String DATABASE = "inventra";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "BuduAmmoRoot@123!";
+    private static final String DATABASE = "DB_NAME";
+    private static final String USERNAME = "DB_USERNAME";
+    private static final String PASSWORD = "DB_PASSWORD";
     private static Connection connection;
     
     static {
